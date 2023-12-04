@@ -1,9 +1,13 @@
 import styled from 'styled-components';
 import Cards from "./components/Cards";
 import Nav from "./components/Nav.jsx";
+import About from './components/About.jsx';
+import Detail from './components/Detail.jsx';
 import { useState } from "react";
 import axios from "axios";
-import { BrowserRouter } from "react-router-dom";
+import { Routes, Route, useLocation } from 'react-router-dom';
+import Form from './components/Form/Form.jsx';
+
 
 
 
@@ -29,6 +33,7 @@ const SearchInput = styled.input`
 
 
 function App() { 
+  const location = useLocation(); //para saber en que ruta esta ubicado el usuario
 const [characters, setCharacters] = useState([]);
 const APIKEY = "pi-gabrieldepiero"
 
@@ -52,14 +57,26 @@ setCharacters(charactersFiltered)
 }
 
   return (
-    <BrowserRouter>
+    
    <AppContentWithBackground>
     <AppContent >
-      <Nav onSearch={onSearch}></Nav>
-      <Cards characters={characters} onClose={onClose} />
+      {
+        location.pathname !== "/"
+        ? <Nav onSearch={onSearch}></Nav>
+        : null  
+      }
+      
+
+      <Routes>
+       <Route path='/' element = {<Form/>}/>
+<Route path='/home' element= { <Cards characters={characters} onClose={onClose} />}/>
+      <Route path='/about' element= { <About></About> }/>   
+     <Route path='/detail/:id' element={<Detail></Detail>} />
+      </Routes> 
+
     </AppContent>
     </AppContentWithBackground>
-    </BrowserRouter> //aca envolvi app con la ruta browser.
+    
     
     
   );

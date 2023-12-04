@@ -1,7 +1,9 @@
 
 import React, { useState } from "react";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
+//estilos
 const CardContainer = styled.div`
   position: relative;
   background-color: #663399;
@@ -44,17 +46,23 @@ export default function Card({ id, name, status, species, gender, origin, image,
     setIsHovered(false);
   };
 
+  //estilos
+
   return (
     <CardContainer onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
       <CloseButton onClick={() => onClose(id)}>X</CloseButton>
       {isHovered && (
-        <>
-          <Text>{name}</Text>
-          <Text>{species}</Text>
-          <Text>{gender}</Text>
-          <Text>{status}</Text>
-          <Text>{origin}</Text>
-        </>
+        <div>
+<Link to={`/detail/${id}`}> 
+<h2>{name}</h2>
+</Link>
+          
+
+          <h2>{species}</h2>
+          <h2>{gender}</h2>
+          <h2>{status}</h2>
+          <h2>{origin}</h2>
+        </div>
       )}
       <img src={image} alt='' />
     </CardContainer>
