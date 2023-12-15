@@ -2,11 +2,8 @@ import { useState } from "react";
 import validation from "../Validation/Validation";
 
 const Form = ({login}) => {
+    const [errors, setErrors] = useState({})
     const [userData, setUserData] = useState({
-        email:"",
-        password: ""
-    });
-    const [errors, setErrors] = useState({
         email:"",
         password: ""
     });
