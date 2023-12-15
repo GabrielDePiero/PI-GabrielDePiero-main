@@ -1,7 +1,10 @@
 
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import { addFav, removeFav } from "../redux/actions"
+import { connect } from 'react-redux'
+
 
 //estilos
 const CardContainer = styled.div`
@@ -11,11 +14,11 @@ const CardContainer = styled.div`
   margin: 10px;
   padding: 10px;
   text-align: center;
-  transition: transform 0.3s ease-out; /* Agregamos una transición para suavizar el efecto */
+  transition: transform 0.3s ease-out; 
   cursor: pointer;
 
   &:hover {
-    transform: scale(1.05); /* Aumentamos el tamaño en hover */
+    transform: scale(1.05);
   }
 `;
 
@@ -35,8 +38,27 @@ const Text = styled.h2`
   color: #fff;
 `;
 
-export default function Card({ id, name, status, species, gender, origin, image, onClose }) {
+ function Card({ id, name, status, species, gender, origin, image, onClose, addFav, removeFav, myFavorites }) {
   const [isHovered, setIsHovered] = useState(false);
+
+
+const [isFav, setIsFav] = useState(false);
+
+
+
+const handleFavorite = () =>{
+  isFav ? removeFav(id) : addFav({id, name, status, species, gender, origin,image, onClose})
+  setIsFav(!isFav)
+};
+
+useEffect(() => {
+  myFavorites.forEach((fav) => {  
+     if (fav.id === id) {
+        setIsFav(true);
+     }
+  });
+}, [myFavorites]);
+
 
   const handleMouseEnter = () => {
     setIsHovered(true);
@@ -50,6 +72,11 @@ export default function Card({ id, name, status, species, gender, origin, image,
 
   return (
     <CardContainer onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+    {
+   (
+      <button onClick={handleFavorite}>{isFav ? "❤️" : "🤍"}</button>) 
+     
+}
       <CloseButton onClick={() => onClose(id)}>X</CloseButton>
       {isHovered && (
         <div>
@@ -68,3 +95,20 @@ export default function Card({ id, name, status, species, gender, origin, image,
     </CardContainer>
   );
 }
+
+const mapDispatchToProps = (dispatch) => {
+return {
+  addFav: (character) => dispatch(addFav(character)),
+  removeFav: (id) => dispatch(removeFav(id)),
+
+}
+};
+
+
+const mapStateToProps = (state) => {
+return {
+  myFavorites: state.myFavorites
+}
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Card)

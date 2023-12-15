@@ -3,10 +3,11 @@ import Cards from "./components/Cards";
 import Nav from "./components/Nav.jsx";
 import About from './components/About.jsx';
 import Detail from './components/Detail.jsx';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
-import { Routes, Route, useLocation } from 'react-router-dom';
+import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import Form from './components/Form/Form.jsx';
+import Favorites from './components/Favorites.jsx';
 
 
 
@@ -27,15 +28,32 @@ const SearchInput = styled.input`
   border: none;
   border-radius: 4px;
   outline: none;
-  background-color: #8a2be2; /* Color violeta multicolor */
+  background-color: #8a2be2; 
   color: #fff;
 `;
 
 
 function App() { 
-  const location = useLocation(); //para saber en que ruta esta ubicado el usuario
+const location = useLocation(); //para saber en que ruta esta ubicado el usuario
 const [characters, setCharacters] = useState([]);
 const APIKEY = "pi-gabrieldepiero"
+const [access, setAccess] = useState(false);
+const navigate = useNavigate();
+
+const email = "gabitodepiero@gmail.com"
+const password = "rickoso123"
+
+const login = (userData) => {
+  if(userData.email === email && userData.password === password){
+    setAccess(true);
+    navigate("/home"); //si da true me lleva a otro lado, sino no pasaria nada.
+  }
+
+}
+
+useEffect(() => {
+!access && navigate("/");
+},[access]);
 
 function onSearch(id) { 
   axios(`https://rym2.up.railway.app/api/character/${id}?key=${APIKEY}`).then(
@@ -68,12 +86,12 @@ setCharacters(charactersFiltered)
       
 
       <Routes>
-       <Route path='/' element = {<Form/>}/>
+       <Route path='/' element = {<Form login ={login}/>}/>
 <Route path='/home' element= { <Cards characters={characters} onClose={onClose} />}/>
       <Route path='/about' element= { <About></About> }/>   
      <Route path='/detail/:id' element={<Detail></Detail>} />
+     <Route path='/favorites' element={<Favorites/>} />
       </Routes> 
-
     </AppContent>
     </AppContentWithBackground>
     
