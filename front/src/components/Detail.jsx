@@ -10,7 +10,8 @@ const Detail = () => {
     const [character, setCharacter] = useState({});
 
     useEffect(() => {
-        axios(`${URL_BASE}/${id}?key=${APIKEY}`).then(
+        axios(`http://localhost:3001/rickandmorty/character/${id}`)
+        .then(
            ({ data }) => {
               if (data.name) {
                  setCharacter(data);
@@ -19,7 +20,7 @@ const Detail = () => {
               }
            }
         );
-        return setCharacter({});
+        setCharacter({});
      }, [id]);
 
     return (

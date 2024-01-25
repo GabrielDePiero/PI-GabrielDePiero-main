@@ -43,29 +43,42 @@ const navigate = useNavigate();
 const email = "gabitodepiero@gmail.com"
 const password = "rickoso123"
 
-const login = (userData) => {
-  if(userData.email === email && userData.password === password){
-    setAccess(true);
-    navigate("/home"); //si da true me lleva a otro lado, sino no pasaria nada.
-  }
 
+async function login(userData) {
+try {
+  const { email, password } = userData;
+  const URL = 'http://localhost:3001/rickandmorty/login/';
+  const {data} = await axios(URL + `?email=${email}&password=${password}`)
+  const { access } = data;
+  setAccess(access);
+  access && navigate('/home');
+
+} catch (error) {
+  console.log(error.message);
+  
+  }
 }
+
 
 useEffect(() => {
 !access && navigate("/");
 },[access]);
 
-function onSearch(id) { 
-  axios(`https://rym2.up.railway.app/api/character/${id}?key=${APIKEY}`).then(
-     ({ data }) => {
-        if (data.name) {
-           setCharacters((oldChars) => [...oldChars, data]);
-        } else {
-           window.alert('¡No hay personajes con este ID!');
-        }
-     }
-  );
+
+async function onSearch(id) { 
+try {
+  const {data} = await axios(`http://localhost:3001/rickandmorty/character/${id}`);  
+
+      if (data.name) {
+         setCharacters((oldChars) => [...oldChars, data]);
+      } else {
+         alert('¡No hay personajes con este ID!');
+      }
+} catch (error) {
+  console.log(error)
 }
+}
+
 
 const onClose = (id) => {
   const charactersFiltered = characters.filter(character =>
